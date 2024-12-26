@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Светло-серый фон */
+        }
+        .container {
+            max-width: 500px; /* Ограничиваем ширину контейнера */
+            margin: 50px auto; /* Центрируем контейнер */
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Тень */
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #007bff; /* Синий цвет кнопки */
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center mb-4">Registration</h1> <!---text-center - по центру--->
+    <form th:action="@{/registration}" method="post" th:object="${userEntity}">
+        <div th:if="${#fields.hasErrors('*')}">
+            <div class="alert alert-danger">
+                <ul>
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mb-3"> <!---mb-3 - отступ снизу--->
+            <label for="firstName" class="form-label">Имя:</label>
+            <input type="text" id="firstName" name="firstName" class="form-control" th:field="*{firstName}">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" th:field="*{email}">
+        </div>
+        <div class="mb-3">
+            <label for="phone" class="form-label">Телефон:</label>
+            <input type="tel" id="phone" name="phone" class="form-control" th:field="*{phone}">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль:</label>
+            <input type="password" id="password" name="password" class="form-control" th:field="*{password}">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Register</button> <!---w-100 - ширина на всю область--->
+    </form>
+    <div class = "text-center">
+        <a th:href="@{/login}">Login</a>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

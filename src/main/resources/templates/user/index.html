@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>Запись животных на прием</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa; /* Светло-серый фон для всей страницы */
+            font-family: sans-serif; /* Более современный шрифт */
+        }
+
+
+        .content-wrapper {
+            flex-grow: 1;
+            padding: 20px; /* Отступы для контента */
+        }
+        .header {
+            background-color: #6bf47d; /* Цвет хедера */
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+        }
+        .header .logo{
+            width: 50px;
+            height: 50px;
+        }
+        .header a{
+            text-decoration: none;
+            color: white;
+        }
+        .header .logo img {
+            max-width: 100%;
+            height: auto;
+
+        }
+        .footer {
+            background-color: #343a40; /* Темный цвет футера */
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+
+
+        h1, h2 {
+            color: #343a40; /* Темно-серый цвет заголовков */
+        }
+        .container{
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Тень */
+            padding: 20px;
+        }
+        body {
+            font-family: 'Arial', sans-serif; /* Более приятный шрифт */
+        }
+        .container {
+            max-width: 800px; /* Устанавливаем максимальную ширину контейнера */
+            margin: 30px auto; /* Центрируем контейнер на странице */
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .table-responsive {
+            overflow-x: auto; /* Горизонтальная прокрутка для таблицы, если она широкая */
+        }
+        .error-message {
+            margin-top: 10px;
+            color: #dc3545; /* Красный цвет сообщения об ошибке */
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments :: header}"></div>
+
+<div class="content-wrapper">
+    <div class="container">
+        <h1 class="mt-3 text-center">Личный кабинет</h1>
+
+        <sec:authorize access="isAuthenticated()">
+            <div class="mb-3 text-center">
+                <p>Добро пожаловать, <span th:text="${#authentication.name}"></span>!</p>
+            </div>
+        </sec:authorize>
+
+        <div th:if="${userRents != null and !userRents.empty}">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Ваши записи</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Животное</th>
+                                <th>Дата приема</th>
+                                <th>Дата окончания нахождения животного в клинике</th>
+                                <th>Общая стоимость</th>
+                                <th>Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="rent : ${userRents}">
+                                <td th:text="${rent.car.name}"></td>
+                                <td th:text="${#temporals.format(rent.rentStart, 'dd.MM.yyyy')}"></td>
+                                <td th:text="${#temporals.format(rent.rentEnd, 'dd.MM.yyyy')}"></td>
+                                <td th:text="${rent.totalPrice}"></td>
+                                <td>
+                                    <form th:action="@{/user/deleteRent/{id}(id=${rent.id})}" method="post"
+                                          onsubmit="return confirm('Вы уверены, что хотите отменить бронирование?');">
+                                        <button type="submit" class="btn btn-danger btn-sm">Отменить</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>ЗАПИСЬ НА ПРИЕМ</h2>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/user/}" method="post" th:object="${bookingForm}">
+                    <div class="mb-3">
+                        <label for="carId" class="form-label">Выберите животное:</label>
+                        <select id="carId" name="carId" th:field="*{carId}" class="form-select">
+                            <option th:each="car : ${availableCars}" th:value="${car.id}" th:text="${car.name}"></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Дата приема:</label>
+                        <input type="date" id="startDate" name="startDate" th:field="*{startDate}" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">Дата по которую животное может остаться в клинике:</label>
+                        <input type="date" id="endDate" name="endDate" th:field="*{endDate}" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Записать</button>
+                </form>
+                <p th:if="${error}" class="error-message" th:text="${error}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

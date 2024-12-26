@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список кабинетов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa; /* Светло-серый фон */
+        }
+
+        .content-wrapper {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            color: #343a40; /* Темно-серый цвет заголовков */
+            margin-bottom: 20px;
+        }
+        .header {
+            background-color: #56f370; /* Цвет хедера */
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+        }
+        .header .logo{
+            width: 50px;
+            height: 50px;
+        }
+        .header a{
+            text-decoration: none;
+            color: white;
+        }
+        .header .logo img {
+            max-width: 100%;
+            height: auto;
+
+        }
+        .footer {
+            background-color: #343a40; /* Темный цвет футера */
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments :: header}"></div>
+
+
+<div class="content-wrapper">
+    <div class="container">
+        <h1>Список кабинетов</h1>
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+            <tr>
+
+        <th>ID</th>
+        <th>Название</th>
+        <th>Описание</th>
+        <th>Оборудование</th>
+        <th>Статус</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cab : ${cabs}">
+        <td th:text="${cab.id}"></td>
+        <td th:text="${cab.name}"></td>
+        <td th:text="${cab.description}"></td>
+        <td th:text="${cab.equipment}"></td>
+        <td>
+                    <span th:text="${cab.booked ? 'Занят' : 'Свободен'}"
+                          th:classappend="${cab.booked ? 'text-danger' : 'text-success'}"></span>
+        </td>
+    </tr>
+    </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

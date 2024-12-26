@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список машин для мойки</title>
+</head>
+<body>
+<h1>Список машин для мойки на дату: <span th:text="${date}"></span></h1>
+<ul>
+    <li th:each="car : ${carsToClean}" th:text="${car.name} + ' (' + car.color + ') - Серийный номер: ' + car.serialNumber"></li>
+</ul>
+<a href="/washer">Назад</a>
+</body>
+</html>
